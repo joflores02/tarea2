@@ -3,4 +3,6 @@
 Integrantes: 
 -Cristóbal Ignacio Henriquez Torres
 -Jocabed Aileen López Flores
--Ignacio Soto
+-Ignacio Jesús Soto Miranda
+
+
