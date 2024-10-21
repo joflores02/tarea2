@@ -5,6 +5,6 @@ Integrantes:
 -Jocabed Aileen López Flores
 -Ignacio Jesús Soto Miranda
 
-![Diagrama UML](ERD con entidades coloreadas (notación UML).png)
+![Diagrama UML](https://github.com/joflores02/tarea2/blob/main/UML_Tarea2.png)
 
 
