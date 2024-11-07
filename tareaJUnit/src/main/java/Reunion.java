@@ -43,14 +43,26 @@ abstract class Reunion {
     }
 
     /**
-     * Crea una invitación para un empleado y la envía.
+     * Crea una invitación para un empleado y la envía verificando que el empleado
+     * no esté en la lista.
      *
      * @param empleado El empleado al que se le envía la invitación.
      */
     public void crearInvitación(Empleado empleado) {
-        Invitacion invitacion = new Invitacion(empleado);
-        this.listaInvitados.add(invitacion);
-        invitacion.invitar();
+        boolean verificacionInvitado = false;
+
+        for (Invitacion invitacion : listaInvitados) {
+            if (invitacion.getEmpleado().equals(empleado)) {
+                verificacionInvitado = true;
+                break;
+            }
+        }
+
+        if (!verificacionInvitado) {
+            Invitacion invitacion = new Invitacion(empleado);
+            this.listaInvitados.add(invitacion);
+            invitacion.invitar();
+        }
     }
 
     /**
@@ -73,6 +85,16 @@ abstract class Reunion {
         for (Empleado empleado : empleadosDelDepartamento) {
             crearInvitación(empleado);
         }
+    }
+
+    /**
+     * Entrega empleados invitados.
+     *
+     * @return lista de invitados.
+     */
+
+    public List<Invitacion> obtenerInvitados() {
+        return listaInvitados;
     }
 
     /**
