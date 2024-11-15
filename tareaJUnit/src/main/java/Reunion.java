@@ -177,6 +177,13 @@ abstract class Reunion {
         return duracionPrevista;
     }
 
+    public Instant getHoraPrevista() {
+        return horaPrevista;
+    }
+    public Date getFecha() {
+        return fecha;
+    }
+
     public abstract void iniciar();
 
     public abstract void finalizar();

@@ -3,6 +3,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.time.Duration;
+import java.io.*;
 import java.util.Date;
 import java.util.List;
 
@@ -33,9 +34,10 @@ class ReunionTest {
 
         reunion.registrarAsistencia(empleado1, Instant.parse("2024-11-15T09:10:00Z")); // Fernando llega tarde
         reunion.registrarAsistencia(empleado2, Instant.parse("2024-11-15T09:00:00Z")); // Jose llega puntual
-        reunion.registrarAsistencia(empleado3, null); //Sara no asistió
+
     }
 
+    //Test crear invitaciones
     @Test
     public void testListaInvitadosVaciaInicialmente() {
 
@@ -75,6 +77,7 @@ class ReunionTest {
         assertEquals(1, reunion.obtenerInvitados().size());
     }
 
+    //test asistencia e inasistencia
     @Test
     public void testregistrarAsistencia() {
         reunion.registrarAsistencia(empleado1, Instant.now());
@@ -84,8 +87,10 @@ class ReunionTest {
         assertTrue(reunion.obtenerInasistencias().contains(empleado2));
     }
 
+
     @Test
     void testObtenerAsistencias() {
+        reunion.registrarAsistencia(empleado3, null); //Sara no asistió
         List<Empleado> asistentes = reunion.obtenerAsistencias();
         assertEquals(2, asistentes.size(), "El número de asistentes debe ser 2");
 
@@ -98,6 +103,7 @@ class ReunionTest {
 
     @Test
     void testObtenerInasistencias() {
+        reunion.registrarAsistencia(empleado3, null); //Sara no asistió
         List<Empleado> inasistentes = reunion.obtenerInasistencias();
 
         assertEquals(1, inasistentes.size(), "El número de inasistentes debe ser 1");
@@ -108,5 +114,52 @@ class ReunionTest {
 
         assertFalse(inasistentes.contains(empleado2), "Jose NO debería estar en la lista de inasistentes");
     }
+
+    @Test
+    void testGenerarInforme() throws IOException {
+        reunion.crearInvitación(empleado1);
+        reunion.crearInvitación(empleado2);
+        reunion.crearInvitación(empleado3);
+
+        reunion.registrarAsistencia(empleado1, Instant.now());
+        reunion.registrarAsistencia(empleado2, Instant.now().plus(Duration.ofMinutes(10))); // llega tarde
+        reunion.registrarAsistencia(empleado3, null); // No asiste
+
+        Instant horaInicio = Instant.now();
+        Instant horaFin = horaInicio.plus(Duration.ofMinutes(45));
+        reunion.setHoraInicio(horaInicio);
+        reunion.setHoraFin(horaFin);
+
+        reunion.añadirNota("Reunión técnica sobre el nuevo proyecto.");
+        reunion.añadirNota("Evaluar ideas");
+
+        String archivoInforme = "informe_reunion.txt";
+        reunion.generarInforme(archivoInforme);
+
+        File archivo = new File(archivoInforme);
+        assertTrue(archivo.exists(), "El archivo de informe debería haberse generado.");
+
+        String contenidoArchivo = new String(java.nio.file.Files.readAllBytes(archivo.toPath()));
+
+        assertTrue(contenidoArchivo.contains("Informe de la Reunión"));
+        assertTrue(contenidoArchivo.contains("Fecha: " + reunion.getFecha()));
+        assertTrue(contenidoArchivo.contains("Hora Prevista: " + reunion.getHoraPrevista()));
+        assertTrue(contenidoArchivo.contains("Hora de Inicio: " + reunion.getHoraInicio()));
+        assertTrue(contenidoArchivo.contains("Hora de Fin: " + reunion.getHoraFin()));
+        assertTrue(contenidoArchivo.contains("Duración Total: " + reunion.getDuracionPrevista().toMinutes() + " minutos"));
+        assertTrue(contenidoArchivo.contains("Tipo de Reunión: " + reunion.getTipoReunion()));
+        assertTrue(contenidoArchivo.contains("Sala: " + reunion.getSala()));
+
+        //ayuda a ver los participantes
+        assertTrue(contenidoArchivo.contains(" - Fernando Pérez"));
+        assertTrue(contenidoArchivo.contains(" - Jose Díaz"));
+        assertFalse(contenidoArchivo.contains(" - Sara González"));
+
+        assertTrue(contenidoArchivo.contains("Reunión técnica sobre el nuevo proyecto."));
+        assertTrue(contenidoArchivo.contains("Evaluar ideas"));
+
+        archivo.delete();
+    }
+
 
 }
