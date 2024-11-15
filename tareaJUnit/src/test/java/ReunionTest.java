@@ -3,6 +3,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 
 class ReunionTest {
@@ -25,7 +26,7 @@ class ReunionTest {
         departamento.agregarEmpleado(empleado2);
         departamento.agregarEmpleado(empleado3);
 
-        // Crear una reunión
+
         Instant horaPrevista = Instant.now();
         Duration duracionPrevista = Duration.ofMinutes(45);
         reunion = new ReunionPresencial(new java.util.Date(), horaPrevista, duracionPrevista, tipoReunion.TECNICA, "Sala 1");
@@ -69,5 +70,15 @@ class ReunionTest {
 
         assertEquals(1, reunion.obtenerInvitados().size());
     }
+
+    @Test
+    public void testregistrarAsistencia() {
+        reunion.registrarAsistencia(empleado1, Instant.now());
+        reunion.registrarAsistencia(empleado2, null);
+
+        assertTrue(reunion.obtenerAsistencias().contains(empleado1));
+        assertTrue(reunion.obtenerInasistencias().contains(empleado2));
+    }
+
 
 }
