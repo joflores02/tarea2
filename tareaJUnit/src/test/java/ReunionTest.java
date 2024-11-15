@@ -30,6 +30,10 @@ class ReunionTest {
         Instant horaPrevista = Instant.now();
         Duration duracionPrevista = Duration.ofMinutes(45);
         reunion = new ReunionPresencial(new java.util.Date(), horaPrevista, duracionPrevista, tipoReunion.TECNICA, "Sala 1");
+
+        reunion.registrarAsistencia(empleado1, Instant.parse("2024-11-15T09:10:00Z")); // Fernando llega tarde
+        reunion.registrarAsistencia(empleado2, Instant.parse("2024-11-15T09:00:00Z")); // Jose llega puntual
+        reunion.registrarAsistencia(empleado3, null); //Sara no asistió
     }
 
     @Test
@@ -80,5 +84,29 @@ class ReunionTest {
         assertTrue(reunion.obtenerInasistencias().contains(empleado2));
     }
 
+    @Test
+    void testObtenerAsistencias() {
+        List<Empleado> asistentes = reunion.obtenerAsistencias();
+        assertEquals(2, asistentes.size(), "El número de asistentes debe ser 2");
+
+        assertTrue(asistentes.contains(empleado1), "Fernando debería estar en la lista de asistentes");
+
+        assertTrue(asistentes.contains(empleado2), "Jose debería estar en la lista de asistentes");
+
+        assertFalse(asistentes.contains(empleado3), "Sara no debería estar en la lista de asistentes");
+    }
+
+    @Test
+    void testObtenerInasistencias() {
+        List<Empleado> inasistentes = reunion.obtenerInasistencias();
+
+        assertEquals(1, inasistentes.size(), "El número de inasistentes debe ser 1");
+
+        assertTrue(inasistentes.contains(empleado3), "Sara debería estar en la lista de inasistentes");
+
+        assertFalse(inasistentes.contains(empleado1), "Fernando NO debería estar en la lista de inasistentes");
+
+        assertFalse(inasistentes.contains(empleado2), "Jose NO debería estar en la lista de inasistentes");
+    }
 
 }
