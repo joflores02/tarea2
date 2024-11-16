@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.io.*;
 import java.util.Date;
 import java.util.List;
+import java.time.*;
 
 class ReunionTest {
 
@@ -115,6 +116,23 @@ class ReunionTest {
         assertFalse(inasistentes.contains(empleado2), "Jose NO debería estar en la lista de inasistentes");
     }
 
+    //Creación notas
+    @Test
+    void testAñadirNota() {
+        Instant horaPrevista = Instant.now();
+        Duration duracionPrevista = Duration.ofMinutes(60);
+        ReunionVirtual reunion1 = new ReunionVirtual(new java.util.Date(), horaPrevista, duracionPrevista, tipoReunion.MARKETING, "www.enlace.cl");
+
+        reunion1.añadirNota("Nota importante sobre el proyecto.");
+        reunion1.añadirNota("Evaluar presupuesto y recursos.");
+
+        List<Nota> notas = reunion1.obtenerNotas();
+
+        assertEquals(2, notas.size(), "Deberían haberse añadido dos notas.");
+
+    }
+
+    //Test para generar informes
     @Test
     void testGenerarInforme() throws IOException {
         reunion.crearInvitación(empleado1);

@@ -106,6 +106,10 @@ abstract class Reunion {
         notas.add(new Nota(contenido));
     }
 
+    public List<Nota> obtenerNotas() {
+        return new ArrayList<>(notas);
+    }
+
     /**
      * Registra la asistencia de un empleado a la reunión.
      *
